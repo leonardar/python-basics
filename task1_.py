@@ -17,8 +17,8 @@ def delta(point_1, point_2):
     return ((point_1[0] - point_2[0]) ** 2 + (point_1[1] - point_2[1]) ** 2) ** 0.5
 
 
-def short_path_spot(points_list):
-    results_dict = {}
+def shortest_path_spot(points_list):
+    results = {}
 
     for perm in permutations(points_list[1:]):
         distances = []
@@ -26,10 +26,10 @@ def short_path_spot(points_list):
             distances.append(delta(perm[i], perm[i + 1]))
         points_path = [points_list[0]] + list(perm) + [points_list[0]]
         distances = [delta(points_list[0], perm[0])] + distances + [delta(perm[-1], points_list[0])]
-        results_dict[sum(distances)] = {'path': points_path, 'distances': distances}
+        results[sum(distances)] = {'path': points_path, 'distances': distances}
 
-    min_value = sorted(results_dict)[0]
-    shortest_path = results_dict[min_value]
+    min_value = sorted(results)[0]
+    shortest_path = results[min_value]
 
     output_data = f"{shortest_path['path'][0]}"
     for i in range(len(shortest_path['path']) - 1):
@@ -41,4 +41,4 @@ def short_path_spot(points_list):
 
 if __name__ == '__main__':
     points_list = [(0, 2), (2, 5), (5, 2), (6, 6), (8, 3)]
-    print(short_path_spot(points_list))
+    print(shortest_path_spot(points_list))
