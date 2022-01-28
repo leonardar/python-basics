@@ -13,7 +13,7 @@
 from itertools import permutations
 
 
-def delta_spot(point_1, point_2):
+def delta(point_1, point_2):
     return ((point_1[0] - point_2[0]) ** 2 + (point_1[1] - point_2[1]) ** 2) ** 0.5
 
 
@@ -23,9 +23,9 @@ def short_path_spot(points_list):
     for perm in permutations(points_list[1:]):
         distances = []
         for i in range(len(perm) - 1):
-            distances.append(delta_spot(perm[i], perm[i + 1]))
+            distances.append(delta(perm[i], perm[i + 1]))
         points_path = [points_list[0]] + list(perm) + [points_list[0]]
-        distances = [delta_spot(points_list[0], perm[0])] + distances + [delta_spot(perm[-1], points_list[0])]
+        distances = [delta(points_list[0], perm[0])] + distances + [delta(perm[-1], points_list[0])]
         results_dict[sum(distances)] = {'path': points_path, 'distances': distances}
 
     min_value = sorted(results_dict)[0]
