@@ -114,22 +114,22 @@ def check_win(symbol, coordinate):
 
         vertical = [PLAY_BOARD[x][y] for y in range(10)]
         if check_list(vertical, symbol):
-            return f'{symbol} проиграл. Нажмите пробел для сброса'
+            return f'{symbol} проиграл. Нажмите пробел для новой игры'
 
         horizontal = [PLAY_BOARD[x][y] for x in range(10)]
         if check_list(horizontal, symbol):
-            return f'{symbol} проиграл. Нажмите пробел для сброса'
+            return f'{symbol} проиграл. Нажмите пробел для новой игры'
 
         diagonal_1 = get_diagonal1(x, y)
         if check_list(diagonal_1, symbol):
-            return f'{symbol} проиграл. Нажмите пробел для сброса'
+            return f'{symbol} проиграл. Нажмите пробел для новой игры'
 
         diagonal_2 = get_diagonal2(x, y)
         if check_list(diagonal_2, symbol):
-            return f'{symbol} проиграл. Нажмите пробел для сброса'
+            return f'{symbol} проиграл. Нажмите пробел для новой игры'
 
         if check_draw():
-            return 'Ничья!'
+            return 'Ничья! Нажмите пробел для сброса'
     return False
 
 
@@ -205,7 +205,11 @@ if __name__ == '__main__':
             elif event.type == pygame.MOUSEBUTTONDOWN and not GAME_OVER:
                 x_mouse, y_mouse = pygame.mouse.get_pos()
                 col = x_mouse // (margin + width)
+                if col == X:
+                    col -= 1
                 row = y_mouse // (margin + height)
+                if row == Y:
+                    row -= 1
                 coordinates = (row, col)
                 if coordinates not in FILLED_POINTS:
                     PLAY_BOARD[row][col] = USER
