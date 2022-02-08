@@ -82,11 +82,11 @@ def get_diagonal2(x0, y0):
     return diagonal
 
 
-def check_win(symbol, coordinate):
+def check_losing(symbol, coordinate):
     """
-    Принимаем параметры клика игрока и отправляем на проверку списки с горизонтальным, вертикальным и диагональными
-    рядами на наличие проигрышной комбинации
-    :return: параметры окончания игры или булево значение False если условия для окончания не выполнены
+    Обработка параметров клика игрока и отправление на проверку списков от выбранной ячейки с горизонтальным,
+    вертикальным и диагональными рядами на наличие проигрышной комбинации :return: параметры окончания игры или
+    булево значение False если условие для окончания игры не выполнено
     """
     if coordinate:
         x = coordinate[0]
@@ -109,14 +109,14 @@ def check_win(symbol, coordinate):
             return f'{symbol} проиграл. Нажмите пробел для новой игры'
 
         if check_draw():
-            return 'Ничья! Нажмите пробел для сброса'
+            return 'Ничья! Нажмите пробел для новой игры'
     return False
 
 
 def check_list(lst, symbol):
     """
-    Принимаем и проверяем список на наличие проигрышной комбинации.
-    Возвращаем False в случае её отсутствия
+    Проверка списка на наличие проигрышной комбинации.
+    :return: False в случае отсутствия проигрышной комбинации
     """
     sum = 0
     for item in lst:
@@ -132,7 +132,7 @@ def check_list(lst, symbol):
 def check_draw():
     """
     Проверка игрового поля на ничью
-    :return: булево значение True в случае Ничьи
+    :return: булево значение True
     """
     if len(FILLED_POINTS) == 100:
         return True
@@ -155,7 +155,7 @@ def game_over(message):
 
 def new_game():
     """
-    Сброс параметров и отрисовка нового игрового поля
+    Сброс финальных параметров и отрисовка нового игрового поля
     """
     global GAME_OVER, PLAY_BOARD
     PLAY_BOARD = [[0] * 10 for _ in range(10)]
@@ -166,7 +166,7 @@ def new_game():
 
 def graphic_render():
     """
-    # Графическая отрисовка символов X и O
+    Графическая отрисовка символов и ячеек X и O
     """
     global PLAY_BOARD
     for row in range(10):
@@ -188,7 +188,7 @@ def graphic_render():
 
 
 if __name__ == '__main__':
-    # Генерируем игровую доску и задаём стартовые игровые параметры
+    # Генерация игровой доски и инициализация стартовых игровых параметров
 
     screen = pygame.display.set_mode(SIZE)
     pygame.display.set_caption("Обратные Крестики-Нолики")
@@ -214,19 +214,21 @@ if __name__ == '__main__':
                 if coordinates not in FILLED_POINTS:
                     PLAY_BOARD[row][col] = USER
                     FILLED_POINTS.append(coordinates)
-                    player_game_over = check_win(USER, coordinates)
+                    # Проверка хода игрока на проигрышную комбинацию
+                    player_game_over = check_losing(USER, coordinates)
                     if player_game_over:
                         game_over(player_game_over)
 
                     ai_coordinates = ai_input()
-                    ai_game_over = check_win(AI, ai_coordinates)
+                    # Проверка хода компьютера на проигрышную комбинацию
+                    ai_game_over = check_losing(AI, ai_coordinates)
                     if ai_game_over:
                         game_over(ai_game_over)
 
-            # Определение и обработка параметра сброса игры
+            # Определение и обработка параметра запуска новой игры
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 new_game()
-        # Графически отрисовываем символы X или O
+        # Графическая отрисовка символов X или O
         if not GAME_OVER:
             graphic_render()
 
