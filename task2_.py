@@ -27,10 +27,10 @@ USER = 'X'
 AI = 'O'
 
 
-def ai_input():
+def ai_input() -> tuple:
     """
     Генерация координат для хода компьютера, проверка ячейки и установка маркера
-    :return координаты выбранной ячейки
+    :return tuple координат выбранной ячейки
     """
     global PLAY_BOARD
     while True:
@@ -42,16 +42,14 @@ def ai_input():
             return x, y
 
 
-def get_diagonal1(x0, y0):
+def get_diagonal1(x: int, y: int) -> list:
     """
     Определение первой диагонали от выбранной ячейки
-    :param x0: строка выбранной ячейки
-    :param y0: столбец выбранной ячейки
-    :return: первую диагональ от выбранной ячейки
+    :param x: строка выбранной ячейки
+    :param y: столбец выбранной ячейки
+    :return: список первой диагонали от выбранной ячейки
     """
     diagonal = []
-    x = x0
-    y = y0
     while 0 < x and 0 < y:
         x -= 1
         y -= 1
@@ -62,16 +60,14 @@ def get_diagonal1(x0, y0):
     return diagonal
 
 
-def get_diagonal2(x0, y0):
+def get_diagonal2(x: int, y: int) -> list:
     """
     Определение второй диагонали от выбранной ячейки
-    :param x0: строка выбранной ячейки
-    :param y0: столбец выбранной ячейки
-    :return: вторую диагональ от выбранной ячейки
+    :param x: строка выбранной ячейки
+    :param y: столбец выбранной ячейки
+    :return: список второй диагонали от выбранной ячейки
     """
     diagonal = []
-    x = x0
-    y = y0
     while x < 10 - 1 and 0 < y:
         x += 1
         y -= 1
@@ -82,11 +78,11 @@ def get_diagonal2(x0, y0):
     return diagonal
 
 
-def check_losing(symbol, coordinate):
+def check_losing(symbol: str, coordinate: tuple) -> str or bool:
     """
     Обработка параметров клика игрока и отправление на проверку списков от выбранной ячейки с горизонтальным,
-    вертикальным и диагональными рядами на наличие проигрышной комбинации :return: параметры окончания игры или
-    булево значение False если условие для окончания игры не выполнено
+    вертикальным и диагональными рядами на наличие проигрышной комбинации:return: строковые параметры окончания игры
+    или булево значение False если условие для окончания игры не выполнено
     """
     if coordinate:
         x = coordinate[0]
@@ -113,10 +109,10 @@ def check_losing(symbol, coordinate):
     return False
 
 
-def check_list(lst, symbol):
+def check_list(lst: list, symbol: str) -> bool:
     """
     Проверка списка на наличие проигрышной комбинации.
-    :return: False в случае отсутствия проигрышной комбинации
+    :return: булево значение по наличию или отсутствию проигрышной комбинации
     """
     sum = 0
     for item in lst:
@@ -129,18 +125,19 @@ def check_list(lst, symbol):
     return False
 
 
-def check_draw():
+def check_draw() -> bool:
     """
     Проверка игрового поля на ничью
-    :return: булево значение True
+    :return: булево значение по наличию или отсутствию положения "ничья" в игре
     """
     if len(FILLED_POINTS) == 100:
         return True
+    return False
 
 
-def game_over(message):
+def game_over(message: str):
     """
-    Отрисовка окончания игры
+    Отрисовка окончания игры согласно полученным данным
     """
     global GAME_OVER
     GAME_OVER = True
@@ -188,8 +185,8 @@ def graphic_render():
 
 
 if __name__ == '__main__':
-    # Генерация игровой доски и инициализация стартовых игровых параметров
 
+    # Генерация игровой доски и инициализация стартовых игровых параметров
     screen = pygame.display.set_mode(SIZE)
     pygame.display.set_caption("Обратные Крестики-Нолики")
 
