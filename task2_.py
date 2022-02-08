@@ -16,6 +16,11 @@ Y = 10
 PLAY_BOARD = [[0] * 10 for i in range(10)]
 GAME_OVER = False
 
+SIZE = (510, 510)
+MARGIN = 10
+WIDTH = HEIGHT = 40
+size_window = (WIDTH, HEIGHT)
+
 FILLED_POINTS = []
 
 USER = 'X'
@@ -24,7 +29,7 @@ AI = 'O'
 
 def ai_input():
     """
-    Генерируем координаты для хода компьютера, проверяем свободна ли ячейка и проставляем маркер
+    Генерация координат для хода компьютера, проверка ячейки и установка маркера
     :return координаты выбранной ячейки
     """
     global PLAY_BOARD
@@ -35,22 +40,6 @@ def ai_input():
             FILLED_POINTS.append((x, y))
             PLAY_BOARD[x][y] = AI
             return x, y
-
-
-def check_list(lst, symbol):
-    """
-    Принимаем и проверяем список на наличие проигрышной комбинации.
-    Возвращаем False в случае её отсутствия
-    """
-    sum = 0
-    for item in lst:
-        if item == symbol:
-            sum += 1
-            if sum >= 5:
-                return True
-        else:
-            sum = 0
-    return False
 
 
 def get_diagonal1(x0, y0):
@@ -93,15 +82,6 @@ def get_diagonal2(x0, y0):
     return diagonal
 
 
-def check_draw():
-    """
-    Проверка игрового поля на ничью
-    :return: булево значение True в случае Ничьи
-    """
-    if len(FILLED_POINTS) == 100:
-        return True
-
-
 def check_win(symbol, coordinate):
     """
     Принимаем параметры клика игрока и отправляем на проверку списки с горизонтальным, вертикальным и диагональными
@@ -131,6 +111,31 @@ def check_win(symbol, coordinate):
         if check_draw():
             return 'Ничья! Нажмите пробел для сброса'
     return False
+
+
+def check_list(lst, symbol):
+    """
+    Принимаем и проверяем список на наличие проигрышной комбинации.
+    Возвращаем False в случае её отсутствия
+    """
+    sum = 0
+    for item in lst:
+        if item == symbol:
+            sum += 1
+            if sum >= 5:
+                return True
+        else:
+            sum = 0
+    return False
+
+
+def check_draw():
+    """
+    Проверка игрового поля на ничью
+    :return: булево значение True в случае Ничьи
+    """
+    if len(FILLED_POINTS) == 100:
+        return True
 
 
 def game_over(message):
@@ -172,25 +177,20 @@ def graphic_render():
                 color = GREEN
             else:
                 color = WHITE
-            x = col * width + (col + 1) * margin
-            y = row * height + (row + 1) * margin
-            pygame.draw.rect(screen, color, (x, y, width, height))
+            x = col * WIDTH + (col + 1) * MARGIN
+            y = row * HEIGHT + (row + 1) * MARGIN
+            pygame.draw.rect(screen, color, (x, y, WIDTH, HEIGHT))
             if color == RED:
-                pygame.draw.line(screen, WHITE, (x, y), (x + width, y + height), 2)
-                pygame.draw.line(screen, WHITE, (x + width, y), (x, y + height), 2)
+                pygame.draw.line(screen, WHITE, (x, y), (x + WIDTH, y + HEIGHT), 2)
+                pygame.draw.line(screen, WHITE, (x + WIDTH, y), (x, y + HEIGHT), 2)
             elif color == GREEN:
-                pygame.draw.circle(screen, WHITE, (x + width // 2, y + height // 2), width // 2, 2)
+                pygame.draw.circle(screen, WHITE, (x + WIDTH // 2, y + HEIGHT // 2), WIDTH // 2, 2)
 
 
 if __name__ == '__main__':
     # Генерируем игровую доску и задаём стартовые игровые параметры
 
-    size = (510, 510)
-    margin = 10
-    width = height = 40
-    size_window = (width, height)
-
-    screen = pygame.display.set_mode(size)
+    screen = pygame.display.set_mode(SIZE)
     pygame.display.set_caption("Обратные Крестики-Нолики")
 
     pygame.init()
@@ -204,10 +204,10 @@ if __name__ == '__main__':
             # Обработка клика игрока и формирование кортежа с координатами
             elif event.type == pygame.MOUSEBUTTONDOWN and not GAME_OVER:
                 x_mouse, y_mouse = pygame.mouse.get_pos()
-                col = x_mouse // (margin + width)
+                col = x_mouse // (MARGIN + WIDTH)
                 if col == X:
                     col -= 1
-                row = y_mouse // (margin + height)
+                row = y_mouse // (MARGIN + HEIGHT)
                 if row == Y:
                     row -= 1
                 coordinates = (row, col)
