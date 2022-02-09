@@ -29,8 +29,8 @@ AI = 'O'
 
 def ai_input() -> tuple:
     """
-    Генерация координат для хода компьютера, проверка ячейки и установка маркера
-    :return tuple координат выбранной ячейки
+    Генерация координат для хода компьютера, проверка ячейки и проставление маркера
+    :return tuple с координатами выбранной ячейки
     """
     global PLAY_BOARD
     while True:
@@ -47,7 +47,7 @@ def get_diagonal1(x: int, y: int) -> list:
     Определение первой диагонали от выбранной ячейки
     :param x: строка выбранной ячейки
     :param y: столбец выбранной ячейки
-    :return: список первой диагонали от выбранной ячейки
+    :return: список данных первой диагонали от выбранной ячейки
     """
     diagonal = []
     while 0 < x and 0 < y:
@@ -80,28 +80,18 @@ def get_diagonal2(x: int, y: int) -> list:
 
 def check_losing(symbol: str, coordinate: tuple) -> str or bool:
     """
-    Обработка параметров клика игрока и отправление на проверку списков от выбранной ячейки с горизонтальным,
-    вертикальным и диагональными рядами на наличие проигрышной комбинации:return: строковые параметры окончания игры
+    Обработка параметров клика игрока и отправка на проверку списков от выбранной ячейки с горизонтальным,
+    вертикальным и диагональными линиями на наличие проигрышной комбинации:return: строковые параметры окончания игры
     или булево значение False если условие для окончания игры не выполнено
     """
     if coordinate:
         x = coordinate[0]
         y = coordinate[1]
 
-        vertical = [PLAY_BOARD[x][y] for y in range(10)]
-        if check_list(vertical, symbol):
-            return f'{symbol} проиграл. Нажмите пробел для новой игры'
-
-        horizontal = [PLAY_BOARD[x][y] for x in range(10)]
-        if check_list(horizontal, symbol):
-            return f'{symbol} проиграл. Нажмите пробел для новой игры'
-
-        diagonal_1 = get_diagonal1(x, y)
-        if check_list(diagonal_1, symbol):
-            return f'{symbol} проиграл. Нажмите пробел для новой игры'
-
-        diagonal_2 = get_diagonal2(x, y)
-        if check_list(diagonal_2, symbol):
+        if check_list([PLAY_BOARD[x][y] for y in range(10)], symbol) \
+                or check_list([PLAY_BOARD[x][y] for x in range(10)], symbol) \
+                or check_list(get_diagonal1(x, y), symbol) \
+                or check_list(get_diagonal2(x, y), symbol):
             return f'{symbol} проиграл. Нажмите пробел для новой игры'
 
         if check_draw():
@@ -112,7 +102,7 @@ def check_losing(symbol: str, coordinate: tuple) -> str or bool:
 def check_list(lst: list, symbol: str) -> bool:
     """
     Проверка списка на наличие проигрышной комбинации.
-    :return: булево значение по наличию или отсутствию проигрышной комбинации
+    :return: булево значение True/False
     """
     sum = 0
     for item in lst:
@@ -127,8 +117,8 @@ def check_list(lst: list, symbol: str) -> bool:
 
 def check_draw() -> bool:
     """
-    Проверка игрового поля на ничью
-    :return: булево значение по наличию или отсутствию положения "ничья" в игре
+    Проверка игрового поля на Ничью
+    :return: булево значение True/False
     """
     if len(FILLED_POINTS) == 100:
         return True
@@ -137,7 +127,7 @@ def check_draw() -> bool:
 
 def game_over(message: str):
     """
-    Отрисовка окончания игры согласно полученным данным
+    Отрисовка окончания игры согласно полученным в сообщении данным
     """
     global GAME_OVER
     GAME_OVER = True
@@ -184,6 +174,27 @@ def graphic_render():
                 pygame.draw.circle(screen, WHITE, (x + WIDTH // 2, y + HEIGHT // 2), WIDTH // 2, 2)
 
 
+def user_click(x_mouse: int, y_mouse: int) -> tuple or bool:
+    """
+    Определение координат ячейки по параметрам клика игрока, проверка ячейки и проставление маркера
+    :param x_mouse: первый параметр клика
+    :param y_mouse: второй параметр клика
+    :return: tuple координат или None если ячейка занята
+    """
+    col = x_mouse // (MARGIN + WIDTH)
+    if col == X:
+        col -= 1
+    row = y_mouse // (MARGIN + HEIGHT)
+    if row == Y:
+        row -= 1
+    coordinates = (row, col)
+    if coordinates not in FILLED_POINTS:
+        PLAY_BOARD[row][col] = USER
+        FILLED_POINTS.append(coordinates)
+        return coordinates
+    return None
+
+
 if __name__ == '__main__':
 
     # Генерация игровой доски и инициализация стартовых игровых параметров
@@ -201,16 +212,9 @@ if __name__ == '__main__':
             # Обработка клика игрока и формирование кортежа с координатами
             elif event.type == pygame.MOUSEBUTTONDOWN and not GAME_OVER:
                 x_mouse, y_mouse = pygame.mouse.get_pos()
-                col = x_mouse // (MARGIN + WIDTH)
-                if col == X:
-                    col -= 1
-                row = y_mouse // (MARGIN + HEIGHT)
-                if row == Y:
-                    row -= 1
-                coordinates = (row, col)
-                if coordinates not in FILLED_POINTS:
-                    PLAY_BOARD[row][col] = USER
-                    FILLED_POINTS.append(coordinates)
+                coordinates = user_click(x_mouse, y_mouse)
+
+                if coordinates is not None:
                     # Проверка хода игрока на проигрышную комбинацию
                     player_game_over = check_losing(USER, coordinates)
                     if player_game_over:
