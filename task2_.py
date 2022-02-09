@@ -27,6 +27,27 @@ USER = 'X'
 AI = 'O'
 
 
+def user_input(x_mouse: int, y_mouse: int) -> tuple or bool:
+    """
+    Определение координат ячейки по параметрам клика игрока, проверка ячейки и проставление маркера
+    :param x_mouse: первый параметр клика
+    :param y_mouse: второй параметр клика
+    :return: tuple координат или None если ячейка занята
+    """
+    col = x_mouse // (MARGIN + WIDTH)
+    if col == X:
+        col -= 1
+    row = y_mouse // (MARGIN + HEIGHT)
+    if row == Y:
+        row -= 1
+    coordinates = (row, col)
+    if coordinates not in FILLED_POINTS:
+        PLAY_BOARD[row][col] = USER
+        FILLED_POINTS.append(coordinates)
+        return coordinates
+    return None
+
+
 def ai_input() -> tuple:
     """
     Генерация координат для хода компьютера, проверка ячейки и проставление маркера
@@ -174,27 +195,6 @@ def graphic_render():
                 pygame.draw.circle(screen, WHITE, (x + WIDTH // 2, y + HEIGHT // 2), WIDTH // 2, 2)
 
 
-def user_click(x_mouse: int, y_mouse: int) -> tuple or bool:
-    """
-    Определение координат ячейки по параметрам клика игрока, проверка ячейки и проставление маркера
-    :param x_mouse: первый параметр клика
-    :param y_mouse: второй параметр клика
-    :return: tuple координат или None если ячейка занята
-    """
-    col = x_mouse // (MARGIN + WIDTH)
-    if col == X:
-        col -= 1
-    row = y_mouse // (MARGIN + HEIGHT)
-    if row == Y:
-        row -= 1
-    coordinates = (row, col)
-    if coordinates not in FILLED_POINTS:
-        PLAY_BOARD[row][col] = USER
-        FILLED_POINTS.append(coordinates)
-        return coordinates
-    return None
-
-
 if __name__ == '__main__':
 
     # Генерация игровой доски и инициализация стартовых игровых параметров
@@ -212,7 +212,7 @@ if __name__ == '__main__':
             # Обработка клика игрока и формирование кортежа с координатами
             elif event.type == pygame.MOUSEBUTTONDOWN and not GAME_OVER:
                 x_mouse, y_mouse = pygame.mouse.get_pos()
-                coordinates = user_click(x_mouse, y_mouse)
+                coordinates = user_input(x_mouse, y_mouse)
 
                 if coordinates is not None:
                     # Проверка хода игрока на проигрышную комбинацию
