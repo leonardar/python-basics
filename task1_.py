@@ -48,6 +48,13 @@ def output(min_value: float, shortest_path: dict) -> str:
 
 
 if __name__ == '__main__':
-    points_list = [(0, 2), (2, 5), (5, 2), (6, 6), (8, 3)]
+
+    points_list = [
+        (0, 2),
+        (2, 5),
+        (5, 2),
+        (6, 6),
+        (8, 3)]
+
     min_value, shortest_path = shortest_path_spot(points_list)
     output(min_value, shortest_path)
