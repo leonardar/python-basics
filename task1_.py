@@ -1,23 +1,22 @@
-"""Почтальон выходит из почтового отделения, объезжает всех адресатов один раз для вручения посылки и возвращается
-в почтовое отделение. Необходимо найти кратчайший маршрут для почтальона.
-Координаты точек:
-Почтовое отделение – (0, 2)
-Ул. Грибоедова, 104/25 – (2, 5)
-Ул. Бейкер стрит, 221б – (5, 2)
-Ул. Большая Садовая, 302-бис – (6, 6)
-Вечнозелёная Аллея, 742 – (8, 3)
-Требования к выходным данным:
-Координаты точек, следующие друг за другом, показывают найденный кратчайший путь с указанием промежуточной длины
-пути у каждой следующей точки. Полная продолжительность всего маршрута указана после символа равенства.
-"""
 from itertools import permutations
 
 
-def delta(point_1, point_2):
+def delta(point_1: tuple, point_2: tuple) -> float:
+    """
+    Вычисление расстояния между двумя точками (адресами)
+    :param point_1:первый адрес
+    :param point_2:второй адрес
+    :return:результат вычисления
+    """
     return ((point_1[0] - point_2[0]) ** 2 + (point_1[1] - point_2[1]) ** 2) ** 0.5
 
 
-def shortest_path_spot(points_list):
+def shortest_path_spot(points_list: list) -> float and dict:
+    """
+    Перебор всех возможных маршрутов, сравнение расстояний маршрутов и нахождение кратчайшего пути
+    :param points_list:координаты точек
+    :return:наименьшее расстояние, все промежуточные точки кратчайшего пути и расстояния между ними
+    """
     results = {}
 
     for perm in permutations(points_list[1:]):
@@ -30,15 +29,25 @@ def shortest_path_spot(points_list):
 
     min_value = sorted(results)[0]
     shortest_path = results[min_value]
+    return min_value, shortest_path
 
+
+def output(min_value: float, shortest_path: dict) -> str:
+    """
+    Формирование выходных данных: последовательность точек кратчайшего пути с выводом промежуточных
+    расстояний для каждой точки и общая длина маршрута
+    :param min_value:наименьшее расстояние
+    :param shortest_path:все промежуточные точки кратчайшего пути и расстояния между ними
+    :return: выходные данные
+    """
     output_data = f"{shortest_path['path'][0]}"
     for i in range(len(shortest_path['path']) - 1):
         output_data += f" -> {shortest_path['path'][i + 1]}[{shortest_path['distances'][i]}]"
     output_data += f" = {min_value}"
-
     return output_data
 
 
 if __name__ == '__main__':
     points_list = [(0, 2), (2, 5), (5, 2), (6, 6), (8, 3)]
-    print(shortest_path_spot(points_list))
+    min_value, shortest_path = shortest_path_spot(points_list)
+    output(min_value, shortest_path)
