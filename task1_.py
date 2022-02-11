@@ -29,6 +29,7 @@ def shortest_path_spot(points_list: list) -> float and dict:
 
     min_value = sorted(results)[0]
     shortest_path = results[min_value]
+
     return min_value, shortest_path
 
 
@@ -44,6 +45,7 @@ def output(min_value: float, shortest_path: dict):
     for i in range(len(shortest_path['path']) - 1):
         output_data += f" -> {shortest_path['path'][i + 1]}[{shortest_path['distances'][i]}]"
     output_data += f" = {min_value}"
+
     print(output_data)
 
 
