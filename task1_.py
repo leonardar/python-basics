@@ -44,7 +44,7 @@ def output(min_value: float, shortest_path: dict) -> str:
     for i in range(len(shortest_path['path']) - 1):
         output_data += f" -> {shortest_path['path'][i + 1]}[{shortest_path['distances'][i]}]"
     output_data += f" = {min_value}"
-    return output_data
+    print(output_data)
 
 
 if __name__ == '__main__':
