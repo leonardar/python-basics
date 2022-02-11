@@ -32,7 +32,7 @@ def shortest_path_spot(points_list: list) -> float and dict:
     return min_value, shortest_path
 
 
-def output(min_value: float, shortest_path: dict) -> str:
+def output(min_value: float, shortest_path: dict):
     """
     Формирование выходных данных: последовательность точек кратчайшего пути с выводом промежуточных
     расстояний для каждой точки и общая длина маршрута
